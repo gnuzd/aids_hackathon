@@ -11,7 +11,7 @@ const schema = z.object({ name: z.string().min(1) }).required({ name: true });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const form = await superValidate(zod(schema));
-	const user = locals.auth.user;
+	const user = locals?.auth?.user;
 	return { form, user };
 };
 

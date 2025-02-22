@@ -1,7 +1,7 @@
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { message } from 'sveltekit-superforms';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 import { BASE_URL } from '$env/static/private';
 
@@ -12,7 +12,7 @@ const schema = z.object({ message: z.string().min(1) }).required({ message: true
 export const load: PageServerLoad = async ({ locals }) => {
 	const form = await superValidate(zod(schema));
 	const user = locals.auth.user as any;
-	const res = await fetch(BASE_URL + '/chats', { headers: { 'x-user-id': user } });
+	const res = await fetch(BASE_URL + '/chats', { headers: { 'x-user-id': user._id } });
 	const messages = await res.json();
 
 	return { form, messages, user };
@@ -30,7 +30,7 @@ export const actions: Actions = {
 		const res = await fetch(BASE_URL + '/chats', {
 			method: 'post',
 			headers: {
-				'x-user-id': user,
+				'x-user-id': user._id,
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
@@ -38,5 +38,9 @@ export const actions: Actions = {
 		});
 		const data = await res.json();
 		return message(form, data);
+	},
+	logout: ({ cookies }) => {
+		cookies.delete('user', { path: '/' });
+		redirect(303, '/');
 	}
 };

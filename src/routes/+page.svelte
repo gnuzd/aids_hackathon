@@ -8,11 +8,17 @@
 
 	const { data } = $props();
 
+	let ready = $state(false);
+
 	const { form, submitting, enhance } = superForm(data.form, {
 		onUpdated: ({ form }) => {
 			if (form.message.user) goto('/app');
 		}
 	});
+
+	setTimeout(() => {
+		ready = true;
+	}, 2000);
 </script>
 
 <Dialog.Root>
@@ -38,7 +44,7 @@
 				</a>
 			</div>
 
-			<div class="flex flex-col items-center gap-3">
+			<div class="flex h-36 flex-col items-center gap-3">
 				<Typewriter>
 					<h1 class="text-5xl font-semibold text-balance text-gray-900">Hackathon 2025</h1>
 				</Typewriter>
@@ -46,11 +52,15 @@
 					<p class="text-lg font-medium text-pretty text-gray-500">AI-powered coding assistant</p>
 				</Typewriter>
 
-				<Dialog.Trigger
-					class="cursor-pointer rounded-lg px-3 py-2 font-semibold text-orange-500 transition hover:bg-orange-600/10"
-				>
-					Get Started
-				</Dialog.Trigger>
+				{#if ready}
+					<div transition:fade>
+						<Dialog.Trigger
+							class="cursor-pointer rounded-lg px-3 py-2 font-semibold text-orange-500 transition hover:bg-orange-600/10"
+						>
+							Get Started
+						</Dialog.Trigger>
+					</div>
+				{/if}
 			</div>
 		</section>
 	</section>
