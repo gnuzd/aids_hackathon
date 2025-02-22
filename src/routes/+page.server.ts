@@ -3,32 +3,32 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { message } from 'sveltekit-superforms';
 import { fail, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
+import { createOrGetUser, initDeveloper } from '$lib/server/services/user';
 
 import type { PageServerLoad } from './$types';
-import { listChat } from '$lib/server/services/chat';
 
-const schema = z.object({ message: z.string().min(1) }).required({ message: true });
+const schema = z.object({ name: z.string().min(1) }).required({ name: true });
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async () => {
 	const form = await superValidate(zod(schema));
-	const user = locals.auth.user as any;
-	let list: any = [];
-	if (user) {
-		list = await listChat(user);
-	}
-	return { form, messages: list };
+	return { form };
 };
 
 export const actions: Actions = {
-	send: async ({ request }) => {
+	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod(schema));
 
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		// call chat gpt
+		const user = await createOrGetUser(form.data.name);
 
-		return message(form, {});
+		if (!user.memory) {
+			await initDeveloper(user);
+			cookies.set('user', user._id.toString(), { path: '/' });
+		}
+
+		return message(form, 'Authorized');
 	}
 };
