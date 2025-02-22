@@ -8,16 +8,16 @@
 		{#each messages as message}
 			<div class="flex flex-col gap-3 p-4 sm:px-6">
 				<div class="inline-flex gap-3">
-					{#if message.send_by === 'user'}
+					{#if message.outbound}
 						<User />
-						<span>User</span>
+						<span>You</span>
 					{:else}
-						<Bot /> <span>Assistant</span>
+						<Bot class="text-orange-600" /> <span>Assistant</span>
 					{/if}
 				</div>
 
 				<div class="flex max-w-3xl items-center">
-					<p>{message.text}</p>
+					<p>{message.content}</p>
 				</div>
 			</div>{/each}
 	</div>

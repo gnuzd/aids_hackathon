@@ -1,7 +1,4 @@
-import { dbConnect } from '$lib/server/db';
 import { redirect, type Handle } from '@sveltejs/kit';
-
-await dbConnect();
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const user = event.cookies.get('user') as any;

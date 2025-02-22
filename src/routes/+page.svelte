@@ -6,9 +6,9 @@
 
 	const { data } = $props();
 
-	const { form, enhance } = superForm(data.form, {
-		onUpdated: () => {
-			goto('/app');
+	const { form, submitting, enhance } = superForm(data.form, {
+		onUpdated: ({ form }) => {
+			if (form.message.user) goto('/app');
 		}
 	});
 </script>
@@ -50,13 +50,16 @@
 	<Dialog.Portal>
 		<Dialog.Overlay class="fixed inset-0 z-50 bg-zinc-900/75" />
 		<Dialog.Content
-			class="fixed top-[50%] left-[50%] z-50 w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-lg border bg-white p-5 p-7 sm:max-w-[490px] md:w-full"
+			class="fixed top-[50%] left-[50%] z-50 w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] space-y-8 rounded-lg border bg-white p-5 p-7 sm:max-w-[490px] md:w-full"
 		>
+			<Dialog.Title><Bot size={64} class="text-orange-600" /></Dialog.Title>
+
 			<Dialog.Description>
-				<form class="flex flex-col gap-3" method="POST" use:enhance>
+				<form class="flex flex-col gap-5" method="POST" use:enhance>
 					<div class=" flex flex-col gap-2 font-semibold">
-						<label for="name" class="text-sm">Tell me your name</label>
+						<label for="name" class="text-sm">Name your virtual developer</label>
 						<input
+							bind:value={$form.name}
 							type="text"
 							name="name"
 							placeholder="Input your name"
@@ -64,10 +67,15 @@
 						/>
 					</div>
 					<Button.Root
+						disabled={!!$submitting}
 						class="inline-flex w-fit cursor-pointer items-center gap-3 rounded-lg px-3 py-2 font-semibold text-orange-500 transition hover:bg-orange-600/10"
 					>
-						<span>Continue</span>
-						<ArrowRight size={18} />
+						{#if !$submitting}
+							<span>Summon</span>
+							<ArrowRight size={18} />
+						{:else}
+							<span>Summoning...</span>
+						{/if}
 					</Button.Root>
 				</form>
 			</Dialog.Description>

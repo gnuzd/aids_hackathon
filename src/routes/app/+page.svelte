@@ -1,21 +1,31 @@
 <script>
 	import { superForm } from 'sveltekit-superforms';
 	import { Mic } from 'lucide-svelte';
-
+	import { io } from 'socket.io-client';
+	import { PUBLIC_WS_URL } from '$env/static/public';
 	import MessageList from './message-list.svelte';
 
 	let { data } = $props();
-	const { form, submitting, submit, enhance } = superForm(data.form, {
+
+	let messages = $state(data.messages);
+
+	const { form, submitting, enhance } = superForm(data.form, {
 		onUpdated: ({ form }) => {
-			messages.push(form.message[0]);
+			if (form.message) {
+				messages = [form.message, ...messages];
+			}
 		}
 	});
 
-	let messages = $state(data.messages);
+	const socket = io(PUBLIC_WS_URL, { query: { user: data.user } });
+
+	socket.on(data.user, (message) => {
+		console.log(message);
+	});
 </script>
 
 <div class="flex h-full flex-col">
-	<div class="flex-1">
+	<div class="flex-1 overflow-auto">
 		<MessageList {messages} />
 	</div>
 
