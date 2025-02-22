@@ -5,18 +5,15 @@ import { fail, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
 import type { PageServerLoad } from './$types';
-import { listChat } from '$lib/server/services/chat';
 
 const schema = z.object({ message: z.string().min(1) }).required({ message: true });
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const form = await superValidate(zod(schema));
 	const user = locals.auth.user as any;
-	let list: any = [];
-	if (user) {
-		list = await listChat(user);
-	}
-	return { form, messages: list };
+	// getListMessage
+	const messages: any = [];
+	return { form, messages };
 };
 
 export const actions: Actions = {
@@ -27,7 +24,7 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		// call chat gpt
+		// createMessage
 
 		return message(form, {});
 	}

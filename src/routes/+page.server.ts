@@ -3,7 +3,6 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { message } from 'sveltekit-superforms';
 import { fail, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
-import { createOrGetUser, initDeveloper } from '$lib/server/services/user';
 
 import type { PageServerLoad } from './$types';
 
@@ -22,13 +21,7 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		const user = await createOrGetUser(form.data.name);
-
-		if (!user.memory) {
-			await initDeveloper(user);
-			cookies.set('user', user._id.toString(), { path: '/' });
-		}
-
+		//TODO: call getOrCreateUser
 		return message(form, 'Authorized');
 	}
 };
