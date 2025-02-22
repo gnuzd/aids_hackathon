@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Bot, User } from 'lucide-svelte';
 	const { messages, user } = $props();
 </script>

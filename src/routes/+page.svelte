@@ -23,7 +23,7 @@
 
 <Dialog.Root>
 	<section class="container m-auto h-dvh">
-		<nav class="p-4">
+		<nav class="fixed p-4">
 			<a class="flex gap-5" href="/">
 				<Bot class="h-8 w-auto text-orange-600" />
 				<span class="text-3xl font-bold">AIDs</span>
@@ -46,10 +46,10 @@
 
 			<div class="flex h-36 flex-col items-center gap-3">
 				<Typewriter>
-					<h1 class="text-5xl font-semibold text-balance text-gray-900">Hackathon 2025</h1>
+					<h1 class="text text-5xl font-semibold text-balance text-zinc-600">Hackathon 2025</h1>
 				</Typewriter>
-				<Typewriter delay={700}>
-					<p class="text-lg font-medium text-pretty text-gray-500">AI-powered coding assistant</p>
+				<Typewriter delay={700} keepCursorOnFinish>
+					<p class="text-lg font-medium text-pretty text-zinc-400">AI-powered coding assistant</p>
 				</Typewriter>
 
 				{#if ready}
@@ -70,7 +70,10 @@
 		<Dialog.Content
 			class="fixed top-[50%] left-[50%] z-50 w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] space-y-8 rounded-lg border bg-white p-5 p-7 sm:max-w-[490px] md:w-full"
 		>
-			<Dialog.Title><Bot size={64} class="text-orange-600" /></Dialog.Title>
+			<Dialog.Title class="flex items-center gap-3">
+				<Bot size={64} class="text-orange-600" />
+				<h1 class="text-3xl font-semibold">AIDs</h1>
+			</Dialog.Title>
 
 			<Dialog.Description>
 				<form class="flex flex-col gap-5" method="POST" use:enhance>
@@ -100,3 +103,11 @@
 		</Dialog.Content>
 	</Dialog.Portal>
 </Dialog.Root>
+
+<style>
+	.text {
+		will-change: filter;
+		transition: 0.75s;
+		filter: drop-shadow(0 0 5em #24c8db);
+	}
+</style>

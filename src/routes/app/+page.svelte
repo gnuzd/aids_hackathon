@@ -2,29 +2,37 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { ChevronsUpDown, LogOut, Mic } from 'lucide-svelte';
 	import { io } from 'socket.io-client';
-	import { PUBLIC_WS_URL } from '$env/static/public';
-	import MessageList from './message-list.svelte';
 	import { Button } from 'bits-ui';
 	import { onMount } from 'svelte';
+	import { PUBLIC_WS_URL } from '$env/static/public';
+	import MessageList from './message-list.svelte';
 
 	let { data } = $props();
 
+	let element: any;
 	let messages = $state(data.messages);
 
-	const { form, submitting, enhance } = superForm(data.form, {
+	const { form, submitting, enhance, submit } = superForm(data.form, {
 		onUpdated: ({ form }) => {
 			if (form.message) {
 				messages.push(form.message);
+				scrollToBottom(element);
 			}
 		}
 	});
 
+	const scrollToBottom = async (node: any) => {
+		node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+	};
+
 	onMount(() => {
+		scrollToBottom(element);
 		if (data.user._id) {
 			const socket = io(PUBLIC_WS_URL, { query: { user: data.user._id } });
 
 			socket.on(data.user._id, (message: any) => {
 				messages.push(message);
+				scrollToBottom(element);
 			});
 		}
 	});
@@ -43,8 +51,8 @@
 	</form>
 </div>
 
-<div class="flex h-full flex-col">
-	<div class=" mt-14 flex-1 overflow-auto">
+<div class="flex h-full flex-col pb-10">
+	<div bind:this={element} class="mt-14 flex-1 overflow-auto">
 		<div class="container m-auto">
 			<MessageList {messages} user={data.user} />
 		</div>
@@ -63,26 +71,26 @@
 			rows={1}
 			name="message"
 			bind:value={$form.message}
-			class="mx-2 flex w-full resize-none border-b border-gray-300 py-2
-		transition outline-none focus:border-orange-500"
+			onkeydown={(e) => {
+				if (e.key === 'Enter' && e.metaKey) submit();
+			}}
+			class="mx-2 flex w-full resize-none border-b border-gray-300 py-2 transition outline-none focus:border-orange-500"
 			placeholder="Enter your prompt"
 		></textarea>
 		<div class="flex gap-2">
 			<button
-				class="cursor-pointer rounded-lg hover:bg-gray-200/75 hover:text-orange-600 sm:p-2"
-				type="button"
-			>
-				<Mic /> <span class="sr-only">voice message</span>
-			</button>
-
-			<button
 				type="submit"
-				disabled={!!$submitting}
+				disabled={!!$submitting || !$form.message}
+				class:text-orange-700={!!$submitting}
 				class:opacity-50={!!$submitting}
-				class="inline-flex cursor-pointer items-center justify-center rounded-lg
-				hover:bg-gray-200/75 hover:text-orange-600 sm:p-2"
+				class="inline-flex cursor-pointer items-center justify-center rounded-md
+				bg-gray-200/50 px-6 py-2 font-medium hover:bg-gray-200/75 hover:text-orange-600 disabled:opacity-25"
 			>
-				Send
+				{#if $submitting}
+					Running
+				{:else}
+					Run
+				{/if}
 			</button>
 		</div>
 	</form>

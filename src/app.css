@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+
+body {
+	font-family: 'Fira Code', serif;
+	font-optical-sizing: auto;
+}
