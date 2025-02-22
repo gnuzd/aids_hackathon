@@ -3,9 +3,9 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { message } from 'sveltekit-superforms';
 import { fail, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
+import { BASE_URL } from '$env/static/private';
 
 import type { PageServerLoad } from './$types';
-import { BASE_URL } from '$env/static/private';
 
 const schema = z.object({ message: z.string().min(1) }).required({ message: true });
 
@@ -37,6 +37,6 @@ export const actions: Actions = {
 			body: JSON.stringify({ content: form.data.message })
 		});
 		const data = await res.json();
-		return message(form, data.message);
+		return message(form, data);
 	}
 };

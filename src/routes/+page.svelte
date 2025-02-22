@@ -3,6 +3,8 @@
 	import { Button, Dialog } from 'bits-ui';
 	import { ArrowRight, Bot } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
+	import Typewriter from 'svelte-typewriter';
+	import { fade } from 'svelte/transition';
 
 	const { data } = $props();
 
@@ -14,37 +16,43 @@
 </script>
 
 <Dialog.Root>
-	<nav class="p-4">
-		<a class="flex gap-5" href="/">
-			<Bot class="h-8 w-auto text-orange-600" />
-			<span class="text-3xl font-bold">AIDs</span>
-		</a>
-	</nav>
-
-	<section class="flex h-full flex-col items-center justify-center gap-16 p-4">
-		<div
-			class="rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
-		>
-			<span>Announcing our hackathons of funding.</span>
-			<a
-				href="https://docs.google.com/presentation/d/1jSTqT2EepYfRuVHNEzMvkS4OYIjj1rC71kQ6AMX4H4Q/edit?pli=1#slide=id.g110860aa576_0_0"
-				class="font-semibold text-orange-600"
-			>
-				<span class="inset-0" aria-hidden="true"></span>Read more
-				<span aria-hidden="true">&rarr;</span>
+	<section class="container m-auto h-dvh">
+		<nav class="p-4">
+			<a class="flex gap-5" href="/">
+				<Bot class="h-8 w-auto text-orange-600" />
+				<span class="text-3xl font-bold">AIDs</span>
 			</a>
-		</div>
+		</nav>
 
-		<div class="flex flex-col items-center gap-3">
-			<h1 class="text-5xl font-semibold text-balance text-gray-900">Hackathon 2025</h1>
-			<p class="text-lg font-medium text-pretty text-gray-500">AI-powered coding assistant</p>
-
-			<Dialog.Trigger
-				class="cursor-pointer rounded-lg px-3 py-2 font-semibold text-orange-500 transition hover:bg-orange-600/10"
+		<section class="flex h-full flex-col items-center justify-center gap-16 p-4">
+			<div
+				class="rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
 			>
-				Get Started
-			</Dialog.Trigger>
-		</div>
+				<span>Announcing our hackathons of funding.</span>
+				<a
+					href="https://docs.google.com/presentation/d/1jSTqT2EepYfRuVHNEzMvkS4OYIjj1rC71kQ6AMX4H4Q/edit?pli=1#slide=id.g110860aa576_0_0"
+					class="font-semibold text-orange-600"
+				>
+					<span class="inset-0" aria-hidden="true"></span>Read more
+					<span aria-hidden="true">&rarr;</span>
+				</a>
+			</div>
+
+			<div class="flex flex-col items-center gap-3">
+				<Typewriter>
+					<h1 class="text-5xl font-semibold text-balance text-gray-900">Hackathon 2025</h1>
+				</Typewriter>
+				<Typewriter delay={700}>
+					<p class="text-lg font-medium text-pretty text-gray-500">AI-powered coding assistant</p>
+				</Typewriter>
+
+				<Dialog.Trigger
+					class="cursor-pointer rounded-lg px-3 py-2 font-semibold text-orange-500 transition hover:bg-orange-600/10"
+				>
+					Get Started
+				</Dialog.Trigger>
+			</div>
+		</section>
 	</section>
 
 	<Dialog.Portal>

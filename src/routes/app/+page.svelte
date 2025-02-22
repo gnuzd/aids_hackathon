@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
-	import { Mic } from 'lucide-svelte';
+	import { Bot, ChevronsUpDown, Mic } from 'lucide-svelte';
 	import { io } from 'socket.io-client';
 	import { PUBLIC_WS_URL } from '$env/static/public';
 	import MessageList from './message-list.svelte';
@@ -12,28 +12,38 @@
 	const { form, submitting, enhance } = superForm(data.form, {
 		onUpdated: ({ form }) => {
 			if (form.message) {
-				messages = [form.message, ...messages];
+				messages.push(form.message);
 			}
 		}
 	});
 
 	const socket = io(PUBLIC_WS_URL, { query: { user: data.user } });
 
-	socket.on(data.user, (message) => {
-		console.log(message);
+	socket.on(data.user, (message: any) => {
+		messages.push(message);
 	});
 </script>
 
-<div class="flex h-full flex-col">
-	<div class="flex-1 overflow-auto">
-		<MessageList {messages} />
+<div class="fixed top-0 right-0 left-0 flex w-full justify-end bg-white p-4">
+	<div
+		class="inline-flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-300 px-3 py-1.5"
+	>
+		gpt-4o-2024-05-13 <ChevronsUpDown size={16} />
+	</div>
+</div>
+
+<div class="flex h-full flex-col pb-10">
+	<div class=" flex-1 overflow-auto">
+		<div class="container m-auto">
+			<MessageList {messages} />
+		</div>
 	</div>
 
 	<form
 		method="POST"
 		use:enhance
 		action="?/send"
-		class="flex w-full items-start rounded-md bg-gray-50 p-2"
+		class="container m-auto flex w-full items-start rounded-md bg-gray-50 p-2"
 	>
 		<label for="prompt" class="sr-only">Enter your prompt</label>
 

@@ -16,7 +16,7 @@
 					{/if}
 				</div>
 
-				<div class="flex max-w-3xl items-center">
+				<div class="flex items-center">
 					<p>{message.content}</p>
 				</div>
 			</div>{/each}
